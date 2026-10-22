@@ -1,0 +1,13 @@
+{
+  "name": "bytevox",
+  "version": "1.0.0",
+  "description": "ByteVox Show-Your-Work Report Builder",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "db:setup": "cd backend && npm run db:setup",
+    "test": "cd backend && npm test"
+  },
+  "private": true
+}
