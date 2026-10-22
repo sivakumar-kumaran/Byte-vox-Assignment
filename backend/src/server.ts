@@ -21,7 +21,12 @@ if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 // ── Security ──────────────────────────────────────────────────────────────────
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow server-to-server, curl, mobile, or requests without Origin header
+    if (!origin) return callback(null, true);
+    // Dynamically allow requesting origin (e.g. Vercel deployment, localhost)
+    return callback(null, true);
+  },
   credentials: true,
 }));
 
