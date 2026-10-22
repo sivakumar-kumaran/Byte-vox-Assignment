@@ -1,0 +1,247 @@
+/**
+ * PDF export service using PDFKit (pure Node.js, no headless browser required).
+ * Generates a formatted report PDF with all block data.
+ */
+
+import PDFDocument from 'pdfkit';
+import { Writable } from 'stream';
+import { Report, ColumnMeta } from '../types';
+import { Pool } from 'pg';
+import { computeMetric, computeChart, computeTable } from './aggregator';
+
+interface ExportOptions {
+  report: Report;
+  columns: ColumnMeta[];
+  pool: Pool;
+}
+
+export async function exportReportToPDF(
+  { report, columns, pool }: ExportOptions
+): Promise<Buffer> {
+  return new Promise(async (resolve, reject) => {
+    const doc = new PDFDocument({ margin: 50, size: 'A4' });
+    const chunks: Buffer[] = [];
+    const stream = new Writable({
+      write(chunk, _enc, cb) { chunks.push(chunk); cb(); },
+    });
+
+    doc.pipe(stream);
+    stream.on('finish', () => resolve(Buffer.concat(chunks)));
+    stream.on('error', reject);
+
+    // ── Header ────────────────────────────────────────────────────────────────
+    doc
+      .fillColor('#6366f1')
+      .font('Helvetica-Bold')
+      .fontSize(24)
+      .text(report.title, { align: 'center' });
+
+    doc
+      .moveDown(0.3)
+      .fillColor('#64748b')
+      .font('Helvetica')
+      .fontSize(10)
+      .text(`Generated: ${new Date().toLocaleString()}`, { align: 'center' });
+
+    // Filter summary
+    const f = report.filters;
+    if (f && Object.keys(f).length > 0) {
+      const parts: string[] = [];
+      if (f.dateColumn && (f.dateFrom || f.dateTo)) {
+        parts.push(`${f.dateColumn}: ${f.dateFrom ?? '—'} to ${f.dateTo ?? '—'}`);
+      }
+      if (f.categoryColumn && f.categoryValues?.length) {
+        parts.push(`${f.categoryColumn}: ${f.categoryValues.join(', ')}`);
+      }
+      if (parts.length) {
+        doc.moveDown(0.5).fillColor('#374151').font('Helvetica-Oblique').fontSize(9)
+          .text(`Filters applied: ${parts.join(' | ')}`, { align: 'center' });
+      }
+    }
+
+    doc.moveDown(1).moveTo(50, doc.y).lineTo(545, doc.y).strokeColor('#e5e7eb').stroke();
+    doc.moveDown(0.5);
+
+    // ── Blocks ────────────────────────────────────────────────────────────────
+    for (const block of report.blocks) {
+      if (block.type === 'text') {
+        doc
+          .moveDown(0.5)
+          .fillColor('#374151')
+          .font('Helvetica')
+          .fontSize(11)
+          .text(block.content, { align: 'left' });
+        doc.moveDown(0.5);
+        continue;
+      }
+
+      // Section heading
+      doc
+        .fillColor('#1f2937')
+        .font('Helvetica-Bold')
+        .fontSize(13)
+        .text(block.title || '(untitled block)');
+      doc.moveDown(0.3);
+
+      try {
+        if (block.type === 'metric') {
+          const result = await computeMetric(
+            pool, report.dataset_id, block.column, block.aggregation,
+            columns, report.filters, block.groupBy
+          );
+
+          if (result.groups) {
+            // Table of groups
+            renderTable(
+              doc,
+              ['Category', block.aggregation.toUpperCase(), 'Rows'],
+              result.groups.map((g) => [g.category, formatNum(g.value), String(g.row_count)])
+            );
+          } else {
+            doc
+              .fillColor('#6366f1')
+              .font('Helvetica-Bold')
+              .fontSize(28)
+              .text(formatNum(result.value as number));
+          }
+
+          renderExplanation(doc, result.explanation);
+        } else if (block.type === 'chart') {
+          const result = await computeChart(
+            pool, report.dataset_id, block.xAxis, block.yAxis,
+            block.aggregation, columns, report.filters
+          );
+
+          renderTable(
+            doc,
+            [block.xAxis, block.yAxis],
+            result.labels.map((l, i) => [l, formatNum(result.values[i])])
+          );
+          renderExplanation(doc, result.explanation);
+        } else if (block.type === 'table') {
+          const result = await computeTable(
+            pool, report.dataset_id, block.columns, block.sortColumn,
+            block.sortDirection, block.limit, columns, report.filters
+          );
+
+          renderTable(
+            doc,
+            result.columns,
+            result.rows.map((r) => result.columns.map((c) => String(r[c] ?? '')))
+          );
+          renderExplanation(doc, result.explanation);
+        }
+      } catch (err) {
+        doc
+          .fillColor('#ef4444')
+          .font('Helvetica')
+          .fontSize(10)
+          .text(`[Block error: ${(err as Error).message}]`);
+      }
+
+      doc.moveDown(1);
+      doc.moveTo(50, doc.y).lineTo(545, doc.y).strokeColor('#f3f4f6').lineWidth(0.5).stroke();
+      doc.moveDown(0.5);
+    }
+
+    // ── Footer ────────────────────────────────────────────────────────────────
+    doc
+      .fillColor('#9ca3af')
+      .font('Helvetica')
+      .fontSize(8)
+      .text('Generated by ByteVox Report Builder', 50, doc.page.height - 40, {
+        align: 'center',
+        width: 495,
+      });
+
+    doc.end();
+  });
+}
+
+function formatNum(n: number): string {
+  if (!isFinite(n)) return '—';
+  if (Number.isInteger(n)) return n.toLocaleString();
+  return n.toLocaleString(undefined, { maximumFractionDigits: 2 });
+}
+
+function renderExplanation(doc: PDFKit.PDFDocument, explanation: {
+  description: string;
+  filters_applied: string[];
+  rows_included: number;
+  rows_excluded: number;
+  total_rows: number;
+  sql: string;
+}) {
+  doc.moveDown(0.5);
+  doc
+    .fillColor('#6b7280')
+    .font('Helvetica-Oblique')
+    .fontSize(9)
+    .text(`ℹ ${explanation.description}`);
+  doc.text(`Rows included: ${explanation.rows_included} / ${explanation.total_rows} (excluded: ${explanation.rows_excluded})`);
+  if (explanation.filters_applied.length) {
+    doc.text(`Filters: ${explanation.filters_applied.join(', ')}`);
+  }
+  doc
+    .font('Courier')
+    .fontSize(7)
+    .fillColor('#374151')
+    .text(explanation.sql, { lineBreak: true, width: 480 });
+  doc.moveDown(0.3);
+}
+
+function renderTable(doc: PDFKit.PDFDocument, headers: string[], rows: string[][]) {
+  const colWidth = Math.floor(480 / headers.length);
+  const rowH = 16;
+  const startX = 50;
+  let y = doc.y;
+
+  // Check if we need a new page
+  if (y + (rows.length + 2) * rowH > doc.page.height - 80) {
+    doc.addPage();
+    y = 50;
+  }
+
+  // Header row
+  doc.rect(startX, y, 495, rowH).fill('#f3f4f6');
+  headers.forEach((h, i) => {
+    doc
+      .fillColor('#374151')
+      .font('Helvetica-Bold')
+      .fontSize(8)
+      .text(h, startX + i * colWidth + 2, y + 4, { width: colWidth - 4, lineBreak: false });
+  });
+  y += rowH;
+
+  // Data rows
+  rows.slice(0, 50).forEach((row, ri) => {
+    if (ri % 2 === 1) doc.rect(startX, y, 495, rowH).fill('#fafafa');
+    row.forEach((cell, ci) => {
+      doc
+        .fillColor('#374151')
+        .font('Helvetica')
+        .fontSize(8)
+        .text(cell.slice(0, 40), startX + ci * colWidth + 2, y + 4, {
+          width: colWidth - 4,
+          lineBreak: false,
+        });
+    });
+    y += rowH;
+
+    if (y > doc.page.height - 80) {
+      doc.addPage();
+      y = 50;
+    }
+  });
+
+  if (rows.length > 50) {
+    doc
+      .fillColor('#9ca3af')
+      .font('Helvetica-Oblique')
+      .fontSize(8)
+      .text(`… and ${rows.length - 50} more rows (see full report)`, startX, y + 4);
+    y += rowH;
+  }
+
+  doc.y = y + 4;
+}
