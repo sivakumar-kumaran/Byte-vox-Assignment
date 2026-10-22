@@ -1,6 +1,9 @@
 # ByteVox — "Show-Your-Work" Report Builder
 
 > **A full-stack web application where anyone can upload a messy spreadsheet, build an interactive executive report, and share it with a secure link — where every single number shows its work.**
+>
+> 🌐 **Live Deployed Backend:** [https://byte-vox-assignment.onrender.com](https://byte-vox-assignment.onrender.com)  
+> 🩺 **Backend Health Check:** [https://byte-vox-assignment.onrender.com/api/health](https://byte-vox-assignment.onrender.com/api/health)
 
 ---
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const client = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://byte-vox-assignment.onrender.com/api',
   timeout: 30_000,
 });
 

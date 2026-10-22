@@ -1,7 +1,9 @@
 # ByteVox — Project Architecture & Operational Summary
 
 > **"Show-Your-Work" Report Builder for Messy Spreadsheets**  
-> *Full-Stack Assessment Submission — ByteVox (an Aurigen Labs company)*
+> *Full-Stack Assessment Submission — ByteVox (an Aurigen Labs company)*  
+> 🌐 **Live Deployed Backend:** [https://byte-vox-assignment.onrender.com](https://byte-vox-assignment.onrender.com)  
+> 🩺 **Backend Health Check:** [https://byte-vox-assignment.onrender.com/api/health](https://byte-vox-assignment.onrender.com/api/health)
 
 ---
 

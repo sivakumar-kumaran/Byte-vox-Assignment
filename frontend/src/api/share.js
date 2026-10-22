@@ -15,10 +15,10 @@ export const shareApi = {
   revoke: (linkId) =>
     client.patch(`/share/revoke/${linkId}`).then((r) => r.data),
 
-  // Public — no auth required
+  // Public — no auth required (client sends no token when not logged in)
   view: (token) =>
-    axios.get(`/api/share/${token}`).then((r) => r.data.report),
+    client.get(`/share/${token}`).then((r) => r.data.report),
 
   computeBlock: (token, block) =>
-    axios.post(`/api/share/${token}/compute`, { block }).then((r) => r.data.result),
+    client.post(`/share/${token}/compute`, { block }).then((r) => r.data.result),
 };
