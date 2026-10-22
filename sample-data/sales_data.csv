@@ -1,0 +1,51 @@
+Order ID,Date,Region,Product,Category,Sales Rep,Units,Unit Price,Revenue,Profit,Status,Customer Rating
+1001,2024-01-05,North,Laptop Pro,Electronics,Alice Chen,2,1299.00,2598.00,420.00,Completed,4.5
+1002,2024-01-07,South,Office Chair,Furniture,Bob Smith,5,299.99,1499.95,225.00,Completed,3.8
+1003,2024-01-08,East,Headphones,Electronics,Carol Jones,3,149.99,449.97,90.00,Completed,4.9
+1004,2024-01-10,North,Standing Desk,Furniture,Alice Chen,1,599.00,599.00,105.00,Cancelled,
+1005,2024-01-12,West,Webcam,Electronics,David Lee,8,79.99,639.92,128.00,Completed,4.2
+1006,2024-01-15,South,Keyboard,Electronics,Bob Smith,12,89.00,1068.00,192.00,Completed,4.7
+1007,2024-01-18,East,Monitor 27",Electronics,Carol Jones,2,449.00,898.00,162.00,Completed,4.1
+1008,bad-date,North,USB Hub,Electronics,Alice Chen,6,29.99,179.94,36.00,Completed,4.3
+1009,2024-01-22,South,Ergonomic Mouse,Electronics,Bob Smith,10,59.99,599.90,120.00,Completed,4.6
+1010,2024-01-25,West,Desk Lamp,Office,David Lee,4,49.99,199.96,60.00,Completed,3.9
+1011,2024-02-01,North,Laptop Pro,Electronics,Alice Chen,3,1299.00,3897.00,630.00,Completed,4.8
+1012,2024-02-03,East,Webcam,Electronics,Carol Jones,5,79.99,399.95,80.00,Completed,4.4
+1013,2024-02-05,South,Monitor 27",Electronics,Bob Smith,1,449.00,449.00,81.00,Pending,4.0
+1014,2024-02-08,West,Standing Desk,Furniture,David Lee,2,599.00,1198.00,210.00,Completed,4.5
+1015,2024-02-10,North,Headphones,Electronics,Alice Chen,7,149.99,1049.93,210.00,Completed,4.7
+1016,,East,Keyboard,Electronics,Carol Jones,4,89.00,356.00,64.00,Completed,4.2
+1017,2024-02-14,South,USB Hub,Electronics,Bob Smith,15,29.99,449.85,90.00,Completed,4.5
+1018,2024-02-18,West,Ergonomic Mouse,Electronics,David Lee,6,59.99,359.94,72.00,Completed,4.1
+1019,2024-02-20,North,Office Chair,Furniture,Alice Chen,3,299.99,899.97,135.00,Completed,3.7
+1020,2024-02-22,East,Desk Lamp,Office,Carol Jones,8,49.99,399.92,120.00,Completed,4.6
+1021,2024-03-01,South,Laptop Pro,Electronics,Bob Smith,4,1299.00,5196.00,840.00,Completed,4.9
+1022,2024-03-03,West,Webcam,Electronics,David Lee,10,79.99,799.90,160.00,Completed,4.3
+1023,2024-03-05,North,Monitor 27",Electronics,Alice Chen,3,449.00,1347.00,243.00,Completed,4.4
+1024,N/A,East,Standing Desk,Furniture,Carol Jones,1,599.00,599.00,105.00,Completed,4.8
+1025,2024-03-10,South,Headphones,Electronics,Bob Smith,6,149.99,899.94,180.00,Completed,4.7
+1026,2024-03-12,West,Keyboard,Electronics,David Lee,20,89.00,1780.00,320.00,Completed,4.5
+1027,2024-03-15,North,USB Hub,Electronics,Alice Chen,12,29.99,359.88,72.00,Completed,4.2
+1028,2024-03-18,East,Ergonomic Mouse,Electronics,Carol Jones,8,59.99,479.92,96.00,Completed,4.6
+1029,2024-03-20,South,Office Chair,Furniture,Bob Smith,2,299.99,599.98,90.00,Cancelled,
+1030,2024-03-22,West,Desk Lamp,Office,David Lee,15,49.99,749.85,225.00,Completed,4.0
+1031,2024-04-01,North,Laptop Pro,Electronics,Alice Chen,5,1299.00,6495.00,1050.00,Completed,5.0
+1032,2024-04-03,East,Webcam,Electronics,Carol Jones,7,79.99,559.93,112.00,Completed,4.3
+1033,2024-04-05,South,Monitor 27",Electronics,Bob Smith,2,449.00,898.00,162.00,Completed,4.1
+1034,2024-04-07,West,Standing Desk,Furniture,David Lee,3,599.00,1797.00,315.00,Completed,4.7
+1035,2024-04-10,North,Headphones,Electronics,Alice Chen,10,149.99,1499.90,300.00,Completed,4.8
+1036,2024-04-12,South,Keyboard,Electronics,Bob Smith,25,89.00,2225.00,400.00,Completed,4.5
+1037,2024-04-15,East,USB Hub,Electronics,Carol Jones,20,29.99,599.80,120.00,Completed,4.4
+1038,INVALID,West,Ergonomic Mouse,Electronics,David Lee,9,59.99,539.91,108.00,Completed,4.2
+1039,2024-04-20,North,Office Chair,Furniture,Alice Chen,4,299.99,1199.96,180.00,Completed,3.9
+1040,2024-04-22,East,Desk Lamp,Office,Carol Jones,12,49.99,599.88,180.00,Completed,4.6
+1041,2024-05-01,South,Laptop Pro,Electronics,Bob Smith,3,1299.00,3897.00,630.00,Completed,4.9
+1042,2024-05-03,West,Webcam,Electronics,David Lee,12,79.99,959.88,192.00,Completed,4.4
+1043,2024-05-05,North,Monitor 27",Electronics,Alice Chen,4,449.00,1796.00,324.00,Completed,4.6
+1044,2024-05-08,East,Standing Desk,Furniture,Carol Jones,2,599.00,1198.00,210.00,Pending,
+1045,2024-05-10,South,Headphones,Electronics,Bob Smith,8,149.99,1199.92,240.00,Completed,4.7
+1046,2024-05-12,West,Keyboard,Electronics,David Lee,30,89.00,2670.00,480.00,Completed,4.8
+1047,2024-05-15,North,USB Hub,Electronics,Alice Chen,18,29.99,539.82,108.00,Completed,4.1
+1048,2024-05-18,East,Ergonomic Mouse,Electronics,Carol Jones,11,59.99,659.89,132.00,Completed,4.5
+1049,2024-05-20,South,Office Chair,Furniture,Bob Smith,5,299.99,1499.95,225.00,Completed,4.0
+1050,2024-05-22,West,Desk Lamp,Office,David Lee,20,49.99,999.80,300.00,Completed,4.3
